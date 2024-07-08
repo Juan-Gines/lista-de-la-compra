@@ -1,0 +1,21 @@
+---
+import ProductFlyoutToggle from './ProductFlyoutToggle.jsx';
+const { title } = Astro.props;
+---
+
+<header class='flex items-baseline justify-evenly my-8'>
+	<h1 class='text-3xl font-bold'>
+		{title}
+	</h1>
+	<nav>
+		<ul class='flex space-x-4'>
+			<li>
+				<a href='/'>Home</a>
+			</li>
+			<li>
+				<a href='/about'>About</a>
+			</li>
+		</ul>
+	</nav>
+	<ProductFlyoutToggle client:only='react' />
+</header>
