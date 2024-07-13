@@ -1,7 +1,9 @@
-import { atom } from "nanostores";
+import { atom, deepMap } from "nanostores";
 import { persistentMap } from "@nanostores/persistent";
 
 export const isProductsOpen = atom(false);
+
+export const category = atom('');
 
 export const productItems = persistentMap('productList',{}, { 
   encode: JSON.stringify,

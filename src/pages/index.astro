@@ -1,38 +1,34 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import products from '../data/products.json';
+import SelectCategory from '../components/SelectCategory.jsx';
 import ProductFlyout from '../components/ProductFlyout.jsx';
-import AddToProductsForm from '../components/AddToProductsForm.jsx';
+import ProductList from '../components/ProductList.jsx';
 const title = 'Lista del Mercadona';
+const urlApiCategories = 'http://tienda.mercadona.es/api/categories/';
+
+// Fetch de las categorías
+const categories = await fetch(urlApiCategories)
+	.then((response) => response.json())
+	.then((data) => data.results)
+	.catch((error) => console.error(error));
+
+// Fetch de los productos
+const categoriesIds = categories
+	.flatMap((category) => category.categories.flatMap((category) => category.id.toString()))
+	.sort();
 ---
 
 <Layout title={title}>
-	<div class='relative'>
+	<div class='relative flex justify-center'>
 		<main>
-			<ul class='grid gap-4 p-4'>
-				{
-					products.length !== 0 ? (
-						products.map((product) => (
-							<li
-								id={product.id.toString()}
-								class='bg-gray-100 dark:bg-gray-800/60 p-4 rounded-lg'
-							>
-								<h2 class='text-xl font-bold'>{product.name}</h2>
-								<p class='text-gray-600 dark:text-gray-400'>{product.price}</p>
-								<p class='text-gray-600 dark:text-gray-400'>{product.price} €</p>
-								<AddToProductsForm
-									item={product}
-									client:visible
-								>
-									<button class='bg-blue-500 text-white p-2 rounded-lg'>Añadir al carrito</button>
-								</AddToProductsForm>
-							</li>
-						))
-					) : (
-						<p class='text-center'>No hay productos</p>
-					)
-				}
-			</ul>
+			<SelectCategory
+				categories={categories}
+				client:load
+			/>
+			<ProductList
+				categoriesIds={categoriesIds}
+				client:visible
+			/>
 		</main>
 		<ProductFlyout client:only='react' />
 	</div>
